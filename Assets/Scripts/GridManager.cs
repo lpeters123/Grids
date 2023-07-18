@@ -15,6 +15,8 @@ public class GridManager : MonoBehaviour
     void Start()
     {
         SpawnOrUpdateGrid();
+        GridRaycaster.OnCurrentlyHoveredOverTileChanged += UpdateHoveredOverStateOfTiles;
+        GridRaycaster.OnCurrentTileUnderMouse0Changed += UpdatePressedStateOfTiles;
     }
 
     // Update is called once per frame
@@ -59,6 +61,35 @@ public class GridManager : MonoBehaviour
                     Destroy(tiles[x, y]);
                 }                
             }
+        }
+    }
+
+    private void UpdateHoveredOverStateOfTiles(GameObject lastTileBeingHoveredOver, GameObject currentTileBeingHoveredOver)
+    {
+
+        if (lastTileBeingHoveredOver != null)
+        {
+            Tile lastTileScript = lastTileBeingHoveredOver.GetComponent<Tile>();
+            lastTileScript.SetHighlightedState(false);
+            lastTileScript.SetPressedState(false);
+        }
+
+        if (currentTileBeingHoveredOver != null)
+        {
+            currentTileBeingHoveredOver.GetComponent<Tile>().SetHighlightedState(true);
+        }
+    }
+
+    private void UpdatePressedStateOfTiles(GameObject beforeLastClickedTile, GameObject lastClickedTile)
+    {
+        if (beforeLastClickedTile != null)
+        {
+            beforeLastClickedTile.GetComponent<Tile>().SetPressedState(false);
+        }
+
+        if (lastClickedTile != null)
+        {
+            lastClickedTile.GetComponent<Tile>().SetPressedState(true);
         }
     }
 
